@@ -2,6 +2,7 @@ import { ArrowRight, Check } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
+import PriceTag from '@/components/ui/PriceTag'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { services } from '@/data/services'
 
@@ -57,7 +58,7 @@ export default function ServicesPage() {
                 {/* Price Badge */}
                 <div className="absolute -bottom-4 -right-4 bg-navy-800 text-white px-6 py-3 rounded-2xl shadow-lg">
                   <span className="text-sm text-navy-300">Starting</span>
-                  <p className="font-display text-xl font-semibold">{service.price}</p>
+                  <PriceTag label={service.price} tone="mint" />
                 </div>
               </div>
 

@@ -1,9 +1,9 @@
+import Avatar from '@/components/ui/Avatar'
 import Card from '@/components/ui/Card'
 import Rating from '@/components/ui/Rating'
 import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { testimonials } from '@/data/testimonials'
-import { initials } from '@/lib/text'
 
 /** What patients said, with the treatment each of them came in for. */
 export default function TestimonialsSection() {
@@ -25,9 +25,7 @@ export default function TestimonialsSection() {
               &ldquo;{testimonial.quote}&rdquo;
             </p>
             <div className="flex items-center gap-3 pt-4 border-t border-navy-100">
-              <div className="w-12 h-12 bg-navy-100 rounded-full flex items-center justify-center text-navy-600 font-semibold">
-                {initials(testimonial.name)}
-              </div>
+              <Avatar name={testimonial.name} />
               <div>
                 <p className="font-semibold text-navy-800">{testimonial.name}</p>
                 <p className="text-sm text-navy-500">{testimonial.treatment}</p>

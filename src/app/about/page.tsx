@@ -1,5 +1,7 @@
 import { Award, HeartHandshake, ShieldCheck, Sparkles } from 'lucide-react'
 
+import DoctorsPreview from '@/components/sections/DoctorsPreview'
+import FaqSection from '@/components/sections/FaqSection'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
@@ -111,6 +113,10 @@ export default function AboutPage() {
           ))}
         </div>
       </Section>
+
+      <DoctorsPreview />
+
+      <FaqSection />
     </>
   )
 }

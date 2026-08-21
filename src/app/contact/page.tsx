@@ -2,15 +2,19 @@
 
 import { useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
+import FaqSection from '@/components/sections/FaqSection'
+import OpeningHoursCard from '@/components/sections/OpeningHoursCard'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
+import { clinic } from '@/data/clinic'
+import { formatPhone, mailtoHref, telHref } from '@/lib/contact'
 
 const contactInfo = [
-  { icon: MapPin, title: 'Visit Us', content: 'Cairo, Egypt', link: 'https://maps.google.com', linkText: 'Get Directions' },
-  { icon: Phone, title: 'Call Us', content: '+20 100 384 3828', link: 'tel:+201003843828', linkText: 'Call Now' },
-  { icon: Mail, title: 'Email Us', content: 'artydentalclinic@gmail.com', link: 'mailto:artydentalclinic@gmail.com', linkText: 'Send Email' },
+  { icon: MapPin, title: 'Visit Us', content: clinic.address, link: clinic.mapsUrl, linkText: 'Get Directions' },
+  { icon: Phone, title: 'Call Us', content: formatPhone(clinic.phone), link: telHref(clinic.phone), linkText: 'Call Now' },
+  { icon: Mail, title: 'Email Us', content: clinic.email, link: mailtoHref(clinic.email), linkText: 'Send Email' },
   { icon: Clock, title: 'Office Hours', content: 'Sat - Thu: 5 PM - 10 PM\nFriday: Closed' },
 ]
 
