@@ -19,7 +19,13 @@ const contactInfo = [
   { icon: MapPin, title: 'Visit Us', content: clinic.address, link: clinic.mapsUrl, linkText: 'Get Directions' },
   { icon: Phone, title: 'Call Us', content: formatPhone(clinic.phone), link: telHref(clinic.phone), linkText: 'Call Now' },
   { icon: Mail, title: 'Email Us', content: clinic.email, link: mailtoHref(clinic.email), linkText: 'Send Email' },
-  { icon: Clock, title: 'Office Hours', content: 'Sat - Thu: 5 PM - 10 PM\nFriday: Closed' },
+  {
+    icon: Clock,
+    title: 'Office Hours',
+    content: clinic.openingHours
+      .map((row) => `${row.days}: ${row.hours}`)
+      .join('\n'),
+  },
 ]
 
 
