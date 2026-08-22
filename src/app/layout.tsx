@@ -3,6 +3,7 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { clinic } from '@/data/clinic'
+import { localBusinessJsonLd } from '@/lib/jsonld'
 import { SITE_URL } from '@/lib/seo'
 
 export const metadata: Metadata = {
@@ -46,6 +47,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
+        {/* Rendered on the server so crawlers see it in the source. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessJsonLd()),
+          }}
+        />
         <Navbar />
         <main className="flex-grow">
           {children}
