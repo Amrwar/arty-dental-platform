@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
+import JsonLd from '@/components/seo/JsonLd'
 import Footer from '@/components/layout/Footer'
 import { clinic } from '@/data/clinic'
 import { localBusinessJsonLd } from '@/lib/jsonld'
@@ -47,13 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        {/* Rendered on the server so crawlers see it in the source. */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(localBusinessJsonLd()),
-          }}
-        />
+        <JsonLd data={localBusinessJsonLd()} />
         {/* Hidden until it is tabbed to; the header is fixed, so without it
             a keyboard user walks the whole nav on every page. */}
         <a
