@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import Button from '@/components/ui/Button'
@@ -87,11 +88,13 @@ export default function GalleryPage() {
               `}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="aspect-[4/3] overflow-hidden">
-                <img
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <Image
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
               {/* Overlay */}
@@ -145,10 +148,13 @@ export default function GalleryPage() {
             className="max-w-4xl w-full animate-scale-in"
           >
             <div className="relative rounded-3xl overflow-hidden">
-              <img
+              <Image
                 src={currentItem.image}
                 alt={currentItem.title}
-                className="w-full max-h-[70vh] object-contain"
+                width={1600}
+                height={1200}
+                sizes="(min-width: 1024px) 56rem, 100vw"
+                className="w-full h-auto max-h-[70vh] object-contain"
               />
             </div>
             <div className="text-center mt-6">
