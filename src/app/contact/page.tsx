@@ -9,6 +9,7 @@ import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { clinic } from '@/data/clinic'
+import { services } from '@/data/services'
 import { formatPhone, mailtoHref, telHref } from '@/lib/contact'
 
 const contactInfo = [
@@ -18,7 +19,7 @@ const contactInfo = [
   { icon: Clock, title: 'Office Hours', content: 'Sat - Thu: 5 PM - 10 PM\nFriday: Closed' },
 ]
 
-const services = ['General Checkup', 'Teeth Cleaning', 'Root Canal Treatment', 'Pediatric Dentistry', 'Cosmetic Dentistry', 'Emergency Care', 'Other']
+
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', service: '', preferredDate: '', preferredTime: '', message: '' })
@@ -104,7 +105,11 @@ export default function ContactPage() {
                     <label htmlFor="service" className="block text-sm font-medium text-navy-700 mb-2">Service Needed *</label>
                     <select id="service" name="service" value={formData.service} onChange={handleChange} required className="form-input">
                       <option value="">Select a service</option>
-                      {services.map((service) => (<option key={service} value={service}>{service}</option>))}
+                      {services.map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.title}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
