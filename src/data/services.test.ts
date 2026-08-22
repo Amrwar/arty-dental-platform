@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest'
 
 import { slugify } from '@/lib/text'
 
-import { serviceById, serviceHref, serviceIds, services } from './services'
+import {
+  bookingHref,
+  serviceById,
+  serviceHref,
+  serviceIds,
+  services,
+} from './services'
 
 describe('the service catalogue', () => {
   it('offers a treatment at all', () => {
@@ -109,6 +115,30 @@ describe('serviceHref', () => {
   it('builds an href for every service in the catalogue', () => {
     for (const id of serviceIds()) {
       expect(serviceHref(id)).toBe(`/services#${id}`)
+    }
+  })
+})
+
+describe('bookingHref', () => {
+  it('points at the booking form', () => {
+    expect(bookingHref('implants').startsWith('/contact?')).toBe(true)
+  })
+
+  it('carries the treatment as the service parameter', () => {
+    const url = new URL(bookingHref('implants'), 'https://example.com')
+    expect(url.searchParams.get('service')).toBe('implants')
+  })
+
+  it('escapes an id that would otherwise break the query string', () => {
+    const url = new URL(bookingHref('a&b=c'), 'https://example.com')
+    expect(url.searchParams.get('service')).toBe('a&b=c')
+  })
+
+  it('gives a usable link for every treatment the clinic lists', () => {
+    for (const id of serviceIds()) {
+      const url = new URL(bookingHref(id), 'https://example.com')
+      expect(url.pathname).toBe('/contact')
+      expect(url.searchParams.get('service')).toBe(id)
     }
   })
 })

@@ -133,3 +133,8 @@ export function serviceIds(): string[] {
 export function serviceHref(id: string): string {
   return `/services#${id}`
 }
+
+/** A link to the booking form with this treatment already chosen. */
+export function bookingHref(id: string): string {
+  return `/contact?service=${encodeURIComponent(id)}`
+}
