@@ -10,6 +10,7 @@ import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { clinic } from '@/data/clinic'
 import { services } from '@/data/services'
+import { emptyBooking } from '@/lib/booking'
 import { formatPhone, mailtoHref, telHref } from '@/lib/contact'
 
 const contactInfo = [
@@ -22,7 +23,7 @@ const contactInfo = [
 
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', phone: '', service: '', preferredDate: '', preferredTime: '', message: '' })
+  const [formData, setFormData] = useState(emptyBooking())
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -81,15 +82,9 @@ export default function ContactPage() {
             ) : (
               <Card>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="firstName" className="block text-sm font-medium text-navy-700 mb-2">First Name *</label>
-                      <input type="text" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} required className="form-input" placeholder="John" />
-                    </div>
-                    <div>
-                      <label htmlFor="lastName" className="block text-sm font-medium text-navy-700 mb-2">Last Name *</label>
-                      <input type="text" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} required className="form-input" placeholder="Doe" />
-                    </div>
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-navy-700 mb-2">Full Name *</label>
+                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="form-input" placeholder="Nour Adel" />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
