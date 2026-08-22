@@ -32,7 +32,7 @@ export default function Navbar() {
       }`}
     >
       <div className="container mx-auto px-4 md:px-6">
-        <nav className="flex items-center justify-between">
+        <nav className="flex items-center justify-between" aria-label="Main">
           <Link href="/" className="flex items-center gap-3 group">
             <ClinicMark
               className="w-12 h-12 bg-navy-800 text-white group-hover:scale-105 group-hover:rotate-3"
@@ -87,14 +87,16 @@ export default function Navbar() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 text-navy-800 hover:bg-navy-50 rounded-xl transition-colors"
-            aria-label="Toggle menu"
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </nav>
 
         {isOpen && (
-          <div className="lg:hidden mobile-menu-enter">
+          <div id="mobile-menu" className="lg:hidden mobile-menu-enter">
             <div className="mt-4 p-6 bg-white rounded-3xl shadow-xl border border-navy-100">
               <div className="space-y-1">
                 {primaryNav.map((link) => (
@@ -102,7 +104,14 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3 text-navy-700 font-medium rounded-xl hover:bg-navy-50 transition-colors"
+                    aria-current={
+                      isActiveRoute(pathname, link.href) ? 'page' : undefined
+                    }
+                    className={`block px-4 py-3 font-medium rounded-xl transition-colors ${
+                      isActiveRoute(pathname, link.href)
+                        ? 'bg-navy-50 text-navy-900'
+                        : 'text-navy-700 hover:bg-navy-50'
+                    }`}
                   >
                     {link.label}
                   </Link>
