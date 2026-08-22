@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['images.unsplash.com'],
+    // `domains` was the old spelling of this and Next warns on it now.
     remotePatterns: [
       {
         protocol: 'https',
