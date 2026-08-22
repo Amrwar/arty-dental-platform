@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -147,5 +147,45 @@ describe('the sitemap against the pages that actually exist', () => {
   it('lists each route once', () => {
     const routes = sitemapRoutes()
     expect(new Set(routes).size).toBe(routes.length)
+  })
+})
+
+describe('the page titles', () => {
+  /** Every metadata title written in the app directory. */
+  const titlesInApp = (): { file: string; title: string }[] => {
+    const appDir = fileURLToPath(new URL('../app', import.meta.url))
+    const found: { file: string; title: string }[] = []
+    const walk = (dir: string, depth: number): void => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const full = join(dir, entry.name)
+        if (entry.isDirectory()) {
+          walk(full, depth + 1)
+          continue
+        }
+        if (!entry.name.endsWith('.tsx')) continue
+        // The root layout is where the template lives, so its own defaults
+        // are supposed to name the clinic.
+        if (depth === 0 && entry.name === 'layout.tsx') continue
+        const source = readFileSync(full, 'utf8')
+        for (const match of source.matchAll(/^\s*title: (.+),$/gm)) {
+          found.push({ file: entry.name, title: match[1] })
+        }
+      }
+    }
+    walk(appDir, 0)
+    return found
+  }
+
+  it('finds titles at all, so the check is not vacuous', () => {
+    expect(titlesInApp().length).toBeGreaterThan(3)
+  })
+
+  it('never repeats the clinic name, which the root template appends', () => {
+    // `About | Arty Dental Clinic` under the template renders the clinic
+    // name twice. Pages carry the short title and nothing more.
+    for (const { file, title } of titlesInApp()) {
+      if (title.includes('template')) continue
+      expect(title.includes('clinic.name'), `${file}: ${title}`).toBe(false)
+    }
   })
 })
