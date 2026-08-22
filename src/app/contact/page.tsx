@@ -92,24 +92,24 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-navy-700 mb-2">Full Name *</label>
-                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="form-input" placeholder="Nour Adel" />
+                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required aria-invalid={errors.name ? true : undefined} aria-describedby={errors.name ? 'name-error' : undefined} className="form-input" placeholder="Nour Adel" />
                     <FieldError id="name-error" message={errors.name} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-navy-700 mb-2">Email Address *</label>
-                      <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="form-input" placeholder="john@example.com" />
+                      <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required aria-invalid={errors.email ? true : undefined} aria-describedby={errors.email ? 'email-error' : undefined} className="form-input" placeholder="john@example.com" />
                       <FieldError id="email-error" message={errors.email} />
                     </div>
                     <div>
                       <label htmlFor="phone" className="block text-sm font-medium text-navy-700 mb-2">Phone Number *</label>
-                      <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required className="form-input" placeholder="+20 100 000 0000" />
+                      <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required aria-invalid={errors.phone ? true : undefined} aria-describedby={errors.phone ? 'phone-error' : undefined} className="form-input" placeholder="+20 100 000 0000" />
                       <FieldError id="phone-error" message={errors.phone} />
                     </div>
                   </div>
                   <div>
                     <label htmlFor="service" className="block text-sm font-medium text-navy-700 mb-2">Service Needed *</label>
-                    <select id="service" name="service" value={formData.service} onChange={handleChange} required className="form-input">
+                    <select id="service" name="service" value={formData.service} onChange={handleChange} required aria-invalid={errors.service ? true : undefined} aria-describedby={errors.service ? 'service-error' : undefined} className="form-input">
                       <option value="">Select a service</option>
                       {services.map((service) => (
                         <option key={service.id} value={service.id}>
@@ -122,12 +122,12 @@ export default function ContactPage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="preferredDate" className="block text-sm font-medium text-navy-700 mb-2">Preferred Date</label>
-                      <input type="date" id="preferredDate" name="preferredDate" value={formData.preferredDate} onChange={handleChange} className="form-input" />
+                      <input type="date" id="preferredDate" name="preferredDate" value={formData.preferredDate} onChange={handleChange} aria-invalid={errors.preferredDate ? true : undefined} aria-describedby={errors.preferredDate ? 'preferredDate-error' : undefined} className="form-input" />
                       <FieldError id="preferredDate-error" message={errors.preferredDate} />
                     </div>
                     <div>
                       <label htmlFor="preferredTime" className="block text-sm font-medium text-navy-700 mb-2">Preferred Time</label>
-                      <select id="preferredTime" name="preferredTime" value={formData.preferredTime} onChange={handleChange} className="form-input">
+                      <select id="preferredTime" name="preferredTime" value={formData.preferredTime} onChange={handleChange} aria-invalid={errors.preferredTime ? true : undefined} aria-describedby={errors.preferredTime ? 'preferredTime-error' : undefined} className="form-input">
                         <option value="">Select a time</option>
                         <option value="5pm">5:00 PM</option>
                         <option value="6pm">6:00 PM</option>
@@ -140,7 +140,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-navy-700 mb-2">Additional Information</label>
-                    <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows={4} className="form-input resize-none" placeholder="Tell us about your dental concerns or any special requirements..." />
+                    <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows={4} aria-invalid={errors.message ? true : undefined} aria-describedby={errors.message ? 'message-error' : undefined} className="form-input resize-none" placeholder="Tell us about your dental concerns or any special requirements..." />
                     <FieldError id="message-error" message={errors.message} />
                   </div>
                   <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
