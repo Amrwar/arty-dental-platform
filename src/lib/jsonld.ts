@@ -9,6 +9,7 @@
 
 import { clinic, type OpeningHours } from '@/data/clinic'
 import type { Faq } from '@/data/faqs'
+import { averageRating, testimonials } from '@/data/testimonials'
 import { daysCovered, timeRange, type Day } from '@/lib/hours'
 import { absoluteUrl, SITE_URL } from '@/lib/seo'
 
@@ -70,8 +71,26 @@ export function openingHoursSpecification(
   })
 }
 
+/**
+ * What the patients said, averaged.
+ *
+ * Left off entirely when there is nothing to average: an aggregate of zero
+ * reviews reads as a rating of zero, which is worse than saying nothing.
+ */
+export function aggregateRating() {
+  if (testimonials.length === 0) return null
+  return {
+    '@type': 'AggregateRating' as const,
+    ratingValue: averageRating(),
+    reviewCount: testimonials.length,
+    bestRating: 5,
+    worstRating: 1,
+  }
+}
+
 /** The clinic itself, as a local business a search engine can place. */
 export function localBusinessJsonLd(): JsonLd {
+  const rating = aggregateRating()
   return {
     '@context': 'https://schema.org',
     '@type': 'Dentist',
@@ -84,6 +103,7 @@ export function localBusinessJsonLd(): JsonLd {
     address: postalAddress(),
     hasMap: clinic.mapsUrl,
     openingHoursSpecification: openingHoursSpecification(),
+    ...(rating ? { aggregateRating: rating } : {}),
   }
 }
 

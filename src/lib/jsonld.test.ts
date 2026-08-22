@@ -10,8 +10,10 @@ import { describe, expect, it } from 'vitest'
 
 import { clinic } from '@/data/clinic'
 import { faqs } from '@/data/faqs'
+import { averageRating, testimonials } from '@/data/testimonials'
 
 import {
+  aggregateRating,
   breadcrumbJsonLd,
   faqJsonLd,
   localBusinessJsonLd,
@@ -190,5 +192,31 @@ describe('breadcrumbJsonLd', () => {
 
   it('is a breadcrumb list', () => {
     expect(breadcrumbJsonLd(trail)['@type']).toBe('BreadcrumbList')
+  })
+})
+
+describe('aggregateRating', () => {
+  const rating = aggregateRating()
+
+  it('averages the reviews the site publishes', () => {
+    expect(rating?.ratingValue).toBe(averageRating())
+  })
+
+  it('counts every review', () => {
+    expect(rating?.reviewCount).toBe(testimonials.length)
+  })
+
+  it('declares the scale the rating is on', () => {
+    expect(rating?.bestRating).toBe(5)
+    expect(rating?.worstRating).toBe(1)
+  })
+
+  it('stays inside that scale', () => {
+    expect(rating!.ratingValue).toBeGreaterThanOrEqual(1)
+    expect(rating!.ratingValue).toBeLessThanOrEqual(5)
+  })
+
+  it('is carried on the clinic markup', () => {
+    expect(localBusinessJsonLd().aggregateRating).toEqual(rating)
   })
 })
