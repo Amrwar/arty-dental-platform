@@ -6,6 +6,12 @@ import PriceTag from '@/components/ui/PriceTag'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { services } from '@/data/services'
 
+export const metadata = {
+  title: 'Services',
+  description:
+    'Cleanings, whitening, implants, orthodontics and emergency dental care, each quoted in writing before treatment begins.',
+}
+
 
 export default function ServicesPage() {
   return (
