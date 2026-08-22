@@ -167,7 +167,7 @@ describe('the page titles', () => {
         // are supposed to name the clinic.
         if (depth === 0 && entry.name === 'layout.tsx') continue
         const source = readFileSync(full, 'utf8')
-        for (const match of source.matchAll(/^\s*title: (.+),$/gm)) {
+        for (const match of Array.from(source.matchAll(/^\s*title: (.+),$/gm))) {
           found.push({ file: entry.name, title: match[1] })
         }
       }
