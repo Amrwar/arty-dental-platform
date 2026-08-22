@@ -12,6 +12,7 @@ import { clinic } from '@/data/clinic'
 import { services } from '@/data/services'
 import FieldError from '@/components/ui/FieldError'
 import { emptyBooking, validateBooking, type BookingErrors } from '@/lib/booking'
+import { slotLabel, slotsFor } from '@/lib/availability'
 import { formatPhone, mailtoHref, telHref } from '@/lib/contact'
 
 const contactInfo = [
@@ -28,6 +29,8 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<BookingErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const slots = slotsFor(formData.preferredDate)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -127,13 +130,19 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <label htmlFor="preferredTime" className="block text-sm font-medium text-navy-700 mb-2">Preferred Time</label>
-                      <select id="preferredTime" name="preferredTime" value={formData.preferredTime} onChange={handleChange} aria-invalid={errors.preferredTime ? true : undefined} aria-describedby={errors.preferredTime ? 'preferredTime-error' : undefined} className="form-input">
-                        <option value="">Select a time</option>
-                        <option value="5pm">5:00 PM</option>
-                        <option value="6pm">6:00 PM</option>
-                        <option value="7pm">7:00 PM</option>
-                        <option value="8pm">8:00 PM</option>
-                        <option value="9pm">9:00 PM</option>
+                      <select id="preferredTime" name="preferredTime" value={formData.preferredTime} onChange={handleChange} disabled={slots.length === 0} aria-invalid={errors.preferredTime ? true : undefined} aria-describedby={errors.preferredTime ? 'preferredTime-error' : undefined} className="form-input">
+                        <option value="">
+                          {!formData.preferredDate
+                            ? 'Choose a date first'
+                            : slots.length === 0
+                              ? 'Closed that day'
+                              : 'Select a time'}
+                        </option>
+                        {slots.map((slot) => (
+                          <option key={slot} value={slot}>
+                            {slotLabel(slot)}
+                          </option>
+                        ))}
                       </select>
                       <FieldError id="preferredTime-error" message={errors.preferredTime} />
                     </div>
