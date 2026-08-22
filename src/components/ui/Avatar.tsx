@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import { initials } from '@/lib/text'
 
 interface AvatarProps {
@@ -18,11 +20,15 @@ interface AvatarProps {
 export default function Avatar({ name, src, className = 'w-12 h-12' }: AvatarProps) {
   if (src) {
     return (
-      <img
-        src={src}
-        alt={name}
-        className={`${className} rounded-full object-cover object-top`}
-      />
+      <span className={`${className} relative inline-block shrink-0`}>
+        <Image
+          src={src}
+          alt={name}
+          fill
+          sizes="96px"
+          className="rounded-full object-cover object-top"
+        />
+      </span>
     )
   }
 
