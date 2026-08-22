@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { ArrowRight, Award, CheckCircle2, Star } from 'lucide-react'
 
 import Button from '@/components/ui/Button'
@@ -64,11 +65,15 @@ export default function Hero() {
 
           <div className="relative animate-slide-up stagger-2">
             <div className="relative z-10">
-              <div className="relative rounded-4xl overflow-hidden shadow-2xl">
-                <img
+              <div className="relative rounded-4xl overflow-hidden shadow-2xl h-[500px] lg:h-[600px]">
+                {/* The largest thing on the page, so it is not lazy-loaded. */}
+                <Image
                   src="/doctors/main_doctor_1.avif"
                   alt={`${founder.name} - Founder of Arty Dental Clinic`}
-                  className="w-full h-[500px] lg:h-[600px] object-cover object-top"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900/50 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
