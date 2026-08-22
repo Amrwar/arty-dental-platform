@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest'
 
-import { anchorOf, collectHrefs, isExternal, isInternal, routeOf } from './links'
+import { primaryNav } from '@/data/navigation'
+
+import {
+  anchorOf,
+  collectHrefs,
+  isActiveRoute,
+  isExternal,
+  isInternal,
+  routeOf,
+} from './links'
+import { sitemapRoutes } from './seo'
 
 describe('isInternal', () => {
   it('recognises a site route', () => {
@@ -103,5 +113,56 @@ describe('collectHrefs', () => {
 
   it('returns nothing for an empty tree', () => {
     expect(collectHrefs([])).toEqual([])
+  })
+})
+
+describe('isActiveRoute', () => {
+  it('marks the link to the page being viewed', () => {
+    expect(isActiveRoute('/services', '/services')).toBe(true)
+  })
+
+  it('leaves other links alone', () => {
+    expect(isActiveRoute('/services', '/contact')).toBe(false)
+  })
+
+  it('keeps a section link lit on a page beneath it', () => {
+    expect(isActiveRoute('/services/whitening', '/services')).toBe(true)
+  })
+
+  it('does not treat a similarly named route as being beneath it', () => {
+    expect(isActiveRoute('/services-old', '/services')).toBe(false)
+  })
+
+  it('only lights home up on home', () => {
+    expect(isActiveRoute('/', '/')).toBe(true)
+    expect(isActiveRoute('/services', '/')).toBe(false)
+  })
+
+  it('ignores a trailing slash on either side', () => {
+    expect(isActiveRoute('/services/', '/services')).toBe(true)
+    expect(isActiveRoute('/services', '/services/')).toBe(true)
+  })
+
+  it('treats the empty path as home', () => {
+    expect(isActiveRoute('', '/')).toBe(true)
+  })
+
+  it('is never true for an external link', () => {
+    expect(isActiveRoute('/', 'https://example.com')).toBe(false)
+  })
+
+  it('is never true for a bare anchor', () => {
+    expect(isActiveRoute('/services', '#top')).toBe(false)
+  })
+
+  it('matches the route part of a link carrying an anchor', () => {
+    expect(isActiveRoute('/services', '/services#whitening')).toBe(true)
+  })
+
+  it('lights exactly one primary link on each of the site\u0027s own pages', () => {
+    for (const route of sitemapRoutes()) {
+      const lit = primaryNav.filter((link) => isActiveRoute(route, link.href))
+      expect(lit.length).toBeLessThanOrEqual(1)
+    }
   })
 })

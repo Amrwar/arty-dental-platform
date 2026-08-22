@@ -58,3 +58,20 @@ export function collectHrefs(input: unknown): string[] {
   walk(input)
   return found
 }
+
+/**
+ * Whether a nav link points at the page currently being viewed.
+ *
+ * Home has to be an exact match or it lights up on every page, since every
+ * route starts with a slash. The rest match their own sub-tree, so a link
+ * to `/services` stays lit on `/services/whitening`, but `/services-old`
+ * does not count as being underneath it.
+ */
+export function isActiveRoute(pathname: string, href: string): boolean {
+  const route = routeOf(href)
+  if (route === null) return false
+  const here = pathname.replace(/\/+$/, '') || '/'
+  const there = route.replace(/\/+$/, '') || '/'
+  if (there === '/') return here === '/'
+  return here === there || here.startsWith(`${there}/`)
+}
