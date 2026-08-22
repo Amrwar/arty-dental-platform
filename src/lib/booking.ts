@@ -8,6 +8,7 @@
  */
 
 import { isPublishableEmail, normalisePhone } from '@/lib/contact'
+import { isOpenOn, isSlotOffered, parseIsoDate } from '@/lib/availability'
 import { serviceIds } from '@/data/services'
 
 export interface BookingRequest {
@@ -16,6 +17,10 @@ export interface BookingRequest {
   phone: string
   /** A service id, or empty if the visitor did not choose one. */
   service: string
+  /** The day asked for as `YYYY-MM-DD`, or empty for the first free one. */
+  preferredDate: string
+  /** The slot asked for as `HH:MM`, or empty. */
+  preferredTime: string
   message: string
 }
 
@@ -26,7 +31,15 @@ const MIN_MESSAGE = 10
 
 /** An empty request, for seeding the form. */
 export function emptyBooking(): BookingRequest {
-  return { name: '', email: '', phone: '', service: '', message: '' }
+  return {
+    name: '',
+    email: '',
+    phone: '',
+    service: '',
+    preferredDate: '',
+    preferredTime: '',
+    message: '',
+  }
 }
 
 /**
@@ -61,6 +74,26 @@ export function validateBooking(request: BookingRequest): BookingErrors {
     errors.service = 'Please choose one of the treatments listed.'
   }
 
+  const wantsDate = request.preferredDate.trim().length > 0
+  if (wantsDate) {
+    if (parseIsoDate(request.preferredDate) === null) {
+      errors.preferredDate = 'That date could not be read.'
+    } else if (!isOpenOn(request.preferredDate)) {
+      errors.preferredDate = 'The clinic is closed that day.'
+    }
+  }
+
+  if (request.preferredTime.trim().length > 0) {
+    if (!wantsDate) {
+      errors.preferredTime = 'Please choose a day before a time.'
+    } else if (
+      !errors.preferredDate &&
+      !isSlotOffered(request.preferredDate, request.preferredTime)
+    ) {
+      errors.preferredTime = 'The clinic is not open at that time.'
+    }
+  }
+
   if (request.message.trim().length === 0) {
     errors.message = 'Please tell us what you need.'
   } else if (request.message.trim().length < MIN_MESSAGE) {
@@ -82,6 +115,8 @@ export function normaliseBooking(request: BookingRequest): BookingRequest {
     email: request.email.trim().toLowerCase(),
     phone: normalisePhone(request.phone),
     service: request.service.trim(),
+    preferredDate: request.preferredDate.trim(),
+    preferredTime: request.preferredTime.trim(),
     message: request.message.trim(),
   }
 }

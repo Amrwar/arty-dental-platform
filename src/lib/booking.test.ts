@@ -13,6 +13,8 @@ const good: BookingRequest = {
   email: 'nour@example.com',
   phone: '+20 100 384 3828',
   service: 'general',
+  preferredDate: '',
+  preferredTime: '',
   message: 'I would like a check-up and a cleaning, evenings if possible.',
 }
 
@@ -152,5 +154,90 @@ describe('normaliseBooking', () => {
   it('leaves an already-tidy request unchanged', () => {
     const tidy = normaliseBooking(good)
     expect(normaliseBooking(tidy)).toEqual(tidy)
+  })
+})
+
+describe('the day and time asked for', () => {
+  /** 2026-08-22 is a Saturday, 2026-08-21 the Friday before it. */
+  const SATURDAY = '2026-08-22'
+  const FRIDAY = '2026-08-21'
+
+  it('is happy with no preference at all', () => {
+    expect(validateBooking(good).preferredDate).toBeUndefined()
+    expect(validateBooking(good).preferredTime).toBeUndefined()
+  })
+
+  it('accepts a day the clinic opens', () => {
+    expect(
+      validateBooking(withField('preferredDate', SATURDAY)).preferredDate,
+    ).toBeUndefined()
+  })
+
+  it('refuses a day the clinic is shut', () => {
+    expect(
+      validateBooking(withField('preferredDate', FRIDAY)).preferredDate,
+    ).toBeDefined()
+  })
+
+  it('refuses a date it cannot read', () => {
+    expect(
+      validateBooking(withField('preferredDate', 'next Tuesday')).preferredDate,
+    ).toBeDefined()
+  })
+
+  it('refuses a date that does not exist', () => {
+    expect(
+      validateBooking(withField('preferredDate', '2026-02-31')).preferredDate,
+    ).toBeDefined()
+  })
+
+  it('accepts a slot the clinic offers on the day chosen', () => {
+    const request = { ...good, preferredDate: SATURDAY, preferredTime: '17:00' }
+    expect(validateBooking(request).preferredTime).toBeUndefined()
+  })
+
+  it('refuses a slot before the clinic opens that day', () => {
+    const request = { ...good, preferredDate: SATURDAY, preferredTime: '09:00' }
+    expect(validateBooking(request).preferredTime).toBeDefined()
+  })
+
+  it('refuses a time with no day to attach it to', () => {
+    expect(
+      validateBooking(withField('preferredTime', '17:00')).preferredTime,
+    ).toBeDefined()
+  })
+
+  it('complains about the day rather than the time when the day is the problem', () => {
+    const request = { ...good, preferredDate: FRIDAY, preferredTime: '17:00' }
+    const errors = validateBooking(request)
+    expect(errors.preferredDate).toBeDefined()
+    expect(errors.preferredTime).toBeUndefined()
+  })
+
+  it('still refuses the rest of a bad request alongside a bad date', () => {
+    const request = { ...good, name: '', preferredDate: FRIDAY }
+    const errors = validateBooking(request)
+    expect(errors.name).toBeDefined()
+    expect(errors.preferredDate).toBeDefined()
+  })
+
+  it('will not send a request with a day the clinic is shut', () => {
+    expect(isBookable(withField('preferredDate', FRIDAY))).toBe(false)
+  })
+
+  it('will send one with a day and time that fit', () => {
+    expect(
+      isBookable({ ...good, preferredDate: SATURDAY, preferredTime: '18:00' }),
+    ).toBe(true)
+  })
+
+  it('trims the day and time when normalising', () => {
+    const tidied = normaliseBooking({
+      ...good,
+      preferredDate: `  ${SATURDAY} `,
+      preferredTime: ' 17:00 ',
+    })
+    expect(tidied.preferredDate).toBe(SATURDAY)
+    expect(tidied.preferredTime).toBe('17:00')
   })
 })
