@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Arty Dental Clinic">
+  <rect width="64" height="64" rx="14" fill="#0a1f44"/>
+  <path d="M32 15c-5 0-7-2.5-11.5-2.5C14 12.5 10.5 17 10.5 24.5c0 8 3.5 13 5.5 18.5 1.5 4 2.5 9 5 9 3 0 3.5-8.5 6.5-8.5s3.5 8.5 6.5 8.5c2.5 0 3.5-5 5-9 2-5.5 5.5-10.5 5.5-18.5 0-7.5-3.5-12-10-12C39 12.5 37 15 32 15z" fill="#ffffff"/>
+  <circle cx="47" cy="19" r="5.5" fill="#00a5a8"/>
+</svg>
