@@ -12,7 +12,7 @@ import { clinic } from '@/data/clinic'
 import { services } from '@/data/services'
 import FieldError from '@/components/ui/FieldError'
 import { emptyBooking, validateBooking, type BookingErrors } from '@/lib/booking'
-import { slotLabel, slotsFor } from '@/lib/availability'
+import { isSlotOffered, slotLabel, slotsFor } from '@/lib/availability'
 import { formatPhone, mailtoHref, telHref } from '@/lib/contact'
 
 const contactInfo = [
@@ -34,7 +34,19 @@ export default function ContactPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData((current) => ({ ...current, [name]: value }))
+    setFormData((current) => {
+      const next = { ...current, [name]: value }
+      // A time that exists on one day may not exist on another, and a stale
+      // one left sitting in the field reads as though it were still on offer.
+      if (
+        name === 'preferredDate' &&
+        next.preferredTime &&
+        !isSlotOffered(next.preferredDate, next.preferredTime)
+      ) {
+        next.preferredTime = ''
+      }
+      return next
+    })
     // Clear the complaint as soon as they start addressing it.
     setErrors((current) => ({ ...current, [name]: undefined }))
   }
