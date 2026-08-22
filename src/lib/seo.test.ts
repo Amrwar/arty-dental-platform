@@ -1,3 +1,7 @@
+import { readdirSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import { describe, expect, it } from 'vitest'
 
 import { clinic } from '@/data/clinic'
@@ -87,5 +91,61 @@ describe('sitemapRoutes', () => {
 
   it('is stable between calls', () => {
     expect(sitemapRoutes()).toEqual(sitemapRoutes())
+  })
+})
+
+describe('the sitemap against the pages that actually exist', () => {
+  /**
+   * Walks `src/app` for route segments holding a page, which is the same
+   * thing Next does when it decides what to build. A page added without a
+   * link to it would otherwise never reach the sitemap.
+   */
+  const routesOnDisk = (): string[] => {
+    const appDir = fileURLToPath(new URL('../app', import.meta.url))
+    const found: string[] = []
+    const walk = (dir: string, prefix: string): void => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+          // Route groups and private folders are not routes of their own.
+          if (entry.name.startsWith('_') || entry.name.startsWith('(')) continue
+          walk(join(dir, entry.name), `${prefix}/${entry.name}`)
+        } else if (entry.name === 'page.tsx') {
+          found.push(prefix === '' ? '/' : prefix)
+        }
+      }
+    }
+    walk(appDir, '')
+    return found.sort()
+  }
+
+  it('finds the pages on disk at all, so the check is not vacuous', () => {
+    expect(routesOnDisk().length).toBeGreaterThan(4)
+  })
+
+  it('lists every page that exists', () => {
+    const listed = new Set(sitemapRoutes())
+    for (const route of routesOnDisk()) {
+      expect(listed.has(route), `${route} is missing from the sitemap`).toBe(
+        true,
+      )
+    }
+  })
+
+  it('lists nothing that is not a page', () => {
+    const onDisk = new Set(routesOnDisk())
+    for (const route of sitemapRoutes()) {
+      expect(onDisk.has(route), `${route} is in the sitemap but has no page`).toBe(
+        true,
+      )
+    }
+  })
+
+  it('puts the home page first', () => {
+    expect(sitemapRoutes()[0]).toBe('/')
+  })
+
+  it('lists each route once', () => {
+    const routes = sitemapRoutes()
+    expect(new Set(routes).size).toBe(routes.length)
   })
 })
