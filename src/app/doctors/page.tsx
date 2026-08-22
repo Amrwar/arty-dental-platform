@@ -1,4 +1,5 @@
-﻿import { ArrowRight, Award, GraduationCap, Heart, Linkedin, Mail, Star } from 'lucide-react'
+﻿import Image from 'next/image'
+import { ArrowRight, Award, GraduationCap, Heart, Linkedin, Mail, Star } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
@@ -37,8 +38,14 @@ export default function DoctorsPage() {
       <Section background="white" padding="lg">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-              <img src={founderDoctor.image} alt={founderDoctor.name} className="w-full h-[500px] object-cover object-top" />
+            <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+              <Image
+                src={founderDoctor.image}
+                alt={founderDoctor.name}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover object-top"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 via-transparent to-transparent" />
             </div>
             <div className="absolute -bottom-6 -right-6 w-full h-full bg-accent-teal rounded-3xl -z-10" />
@@ -90,7 +97,13 @@ export default function DoctorsPage() {
           {doctors.map((doctor, index) => (
             <Card key={doctor.name} padding="none" className={`overflow-hidden animate-slide-up stagger-${index + 1}`}>
               <div className="relative h-80 overflow-hidden">
-                <img src={doctor.image} alt={doctor.name} className="w-full h-full object-cover object-top" />
+                <Image
+                  src={doctor.image}
+                  alt={doctor.name}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, 100vw"
+                  className="object-cover object-top"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900/70 via-navy-900/20 to-transparent" />
                 <div className="absolute bottom-4 left-4 flex gap-2">
                   <a href="#" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-navy-800 transition-all"><Linkedin className="w-5 h-5" /></a>
