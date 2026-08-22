@@ -6,6 +6,8 @@ import Section from '@/components/ui/Section'
 import PriceTag from '@/components/ui/PriceTag'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { services } from '@/data/services'
+import JsonLd from '@/components/seo/JsonLd'
+import { breadcrumbJsonLd } from '@/lib/jsonld'
 
 export const metadata = {
   title: 'Services',
@@ -17,6 +19,12 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'Home', route: '/' },
+          { name: 'Services', route: '/services' },
+        ])}
+      />
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 hero-gradient pattern-overlay overflow-hidden">
         <div className="absolute top-20 right-10 w-64 h-64 bg-accent-teal/10 rounded-full blur-3xl animate-pulse-soft" />

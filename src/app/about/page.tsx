@@ -10,6 +10,8 @@ import { clinic } from '@/data/clinic'
 import { doctors, founder } from '@/data/doctors'
 import { stats } from '@/data/testimonials'
 import { listSentence } from '@/lib/text'
+import JsonLd from '@/components/seo/JsonLd'
+import { breadcrumbJsonLd } from '@/lib/jsonld'
 
 export const metadata = {
   title: 'About',
@@ -45,6 +47,12 @@ const values = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'Home', route: '/' },
+          { name: 'About', route: '/about' },
+        ])}
+      />
       <Section background="gradient" padding="lg">
         <SectionHeader
           label="About us"

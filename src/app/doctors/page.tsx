@@ -5,6 +5,8 @@ import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { doctors, founder as founderDoctor } from '@/data/doctors'
+import JsonLd from '@/components/seo/JsonLd'
+import { breadcrumbJsonLd } from '@/lib/jsonld'
 
 export const metadata = {
   title: 'Our Dentists',
@@ -23,6 +25,12 @@ const values = [
 export default function DoctorsPage() {
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'Home', route: '/' },
+          { name: 'Our Dentists', route: '/doctors' },
+        ])}
+      />
       <section className="relative pt-32 pb-20 hero-gradient pattern-overlay overflow-hidden">
         <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent-gold/10 rounded-full blur-3xl animate-pulse-soft" />
         <div className="container mx-auto px-4 md:px-6">
