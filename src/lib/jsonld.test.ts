@@ -152,21 +152,17 @@ describe('faqJsonLd', () => {
   })
 
   it('carries one question per entry', () => {
-    const data = faqJsonLd(faqs) as { mainEntity: unknown[] }
-    expect(data.mainEntity).toHaveLength(faqs.length)
+    expect(faqJsonLd(faqs).mainEntity).toHaveLength(faqs.length)
   })
 
   it('puts the answer inside the question', () => {
-    const data = faqJsonLd([{ question: 'Q?', answer: 'A.' }]) as {
-      mainEntity: { name: string; acceptedAnswer: { text: string } }[]
-    }
+    const data = faqJsonLd([{ question: 'Q?', answer: 'A.' }])
     expect(data.mainEntity[0].name).toBe('Q?')
     expect(data.mainEntity[0].acceptedAnswer.text).toBe('A.')
   })
 
   it('copes with an empty list rather than throwing', () => {
-    const data = faqJsonLd([]) as { mainEntity: unknown[] }
-    expect(data.mainEntity).toEqual([])
+    expect(faqJsonLd([]).mainEntity).toEqual([])
   })
 })
 
@@ -177,29 +173,19 @@ describe('breadcrumbJsonLd', () => {
   ]
 
   it('numbers the steps from one', () => {
-    const data = breadcrumbJsonLd(trail) as {
-      itemListElement: { position: number }[]
-    }
-    expect(data.itemListElement.map((step) => step.position)).toEqual([1, 2])
+    const steps = breadcrumbJsonLd(trail).itemListElement
+    expect(steps.map((step) => step.position)).toEqual([1, 2])
   })
 
   it('gives every step an absolute url', () => {
-    const data = breadcrumbJsonLd(trail) as {
-      itemListElement: { item: string }[]
-    }
-    for (const step of data.itemListElement) {
+    for (const step of breadcrumbJsonLd(trail).itemListElement) {
       expect(step.item.startsWith('http')).toBe(true)
     }
   })
 
   it('keeps the order it was given', () => {
-    const data = breadcrumbJsonLd(trail) as {
-      itemListElement: { name: string }[]
-    }
-    expect(data.itemListElement.map((step) => step.name)).toEqual([
-      'Home',
-      'Services',
-    ])
+    const steps = breadcrumbJsonLd(trail).itemListElement
+    expect(steps.map((step) => step.name)).toEqual(['Home', 'Services'])
   })
 
   it('is a breadcrumb list', () => {

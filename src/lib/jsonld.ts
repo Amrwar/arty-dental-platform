@@ -88,7 +88,7 @@ export function localBusinessJsonLd(): JsonLd {
 }
 
 /** A set of questions and answers, for the rich result. */
-export function faqJsonLd(entries: Faq[]): JsonLd {
+export function faqJsonLd(entries: Faq[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -103,7 +103,7 @@ export function faqJsonLd(entries: Faq[]): JsonLd {
 /** The trail of pages leading to the one being viewed. */
 export function breadcrumbJsonLd(
   trail: { name: string; route: string }[],
-): JsonLd {
+) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
