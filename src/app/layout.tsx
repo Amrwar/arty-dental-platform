@@ -54,8 +54,16 @@ export default function RootLayout({
             __html: JSON.stringify(localBusinessJsonLd()),
           }}
         />
+        {/* Hidden until it is tabbed to; the header is fixed, so without it
+            a keyboard user walks the whole nav on every page. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-navy-900 focus:px-4 focus:py-2 focus:text-white"
+        >
+          Skip to content
+        </a>
         <Navbar />
-        <main className="flex-grow">
+        <main id="main" className="flex-grow">
           {children}
         </main>
         <Footer />
