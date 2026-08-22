@@ -1,135 +1,85 @@
-# Bright Smile Dental - Modern Dental Clinic Website
+# Arty Dental Clinic
 
-A premium, mobile-first dental clinic website built with Next.js 14 (App Router) and Tailwind CSS.
+The clinic's website: services, the dentists, a gallery of work, opening
+hours and an appointment request form. Next.js 14 on the App Router, styled
+with Tailwind, rendered statically.
 
-## 🦷 Features
+## Running it
 
-- **Modern Design**: Clean, medical, premium aesthetic with navy blue primary color
-- **Responsive**: Mobile-first design that works beautifully on all devices
-- **Animations**: Smooth animations and micro-interactions for enhanced UX
-- **SEO Ready**: Proper meta tags and semantic HTML structure
-- **Accessible**: Built with accessibility best practices
-
-## 📁 Project Structure
-
-```
-dental-clinic/
-├── src/
-│   ├── app/
-│   │   ├── globals.css          # Global styles and Tailwind imports
-│   │   ├── layout.tsx           # Root layout with Navbar and Footer
-│   │   ├── page.tsx             # Home page
-│   │   ├── services/
-│   │   │   └── page.tsx         # Services page
-│   │   ├── doctors/
-│   │   │   └── page.tsx         # Doctors/Team page
-│   │   ├── gallery/
-│   │   │   └── page.tsx         # Gallery page with lightbox
-│   │   └── contact/
-│   │       └── page.tsx         # Contact page with form
-│   │
-│   └── components/
-│       ├── layout/
-│       │   ├── Navbar.tsx       # Navigation with mobile menu
-│       │   └── Footer.tsx       # Footer with clinic info
-│       │
-│       └── ui/
-│           ├── Button.tsx       # Reusable button component
-│           ├── Card.tsx         # Reusable card component
-│           ├── Section.tsx      # Page section wrapper
-│           └── SectionHeader.tsx # Section title component
-│
-├── tailwind.config.js           # Tailwind configuration
-├── postcss.config.js            # PostCSS configuration
-├── tsconfig.json                # TypeScript configuration
-├── next.config.js               # Next.js configuration
-└── package.json                 # Project dependencies
+```bash
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-## 🎨 Design System
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build; every route prerenders |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint, on the Next core-web-vitals rules |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest, watching |
+| `npm run test:run` | Vitest, once |
 
-### Colors
+CI runs lint, typecheck, tests and the build on every push and pull request
+against `main`.
 
-- **Navy** (Primary): `#1e3a5f` - Main brand color
-- **Teal** (Accent): `#00a5a8` - Call-to-action and highlights
-- **Gold** (Accent): `#c9a86c` - Premium accents
-- **Mint**: `#e8f5f3` - Light backgrounds
+## How the source is arranged
 
-### Typography
+```
+src/
+├── app/                  routes; each folder with a page.tsx is one
+│   ├── layout.tsx        shell, site metadata, local-business markup
+│   ├── icon.svg          favicon
+│   ├── manifest.ts       web app manifest
+│   ├── robots.ts         robots.txt
+│   ├── sitemap.ts        sitemap.xml
+│   ├── loading.tsx       skeleton shown between navigations
+│   └── error.tsx         last resort when a page throws
+├── components/
+│   ├── layout/           navbar and footer
+│   ├── sections/         the blocks pages are assembled from
+│   ├── seo/              structured-data rendering
+│   └── ui/               buttons, cards, badges, form errors
+├── data/                 the clinic's own content, typed
+└── lib/                  the logic, with the tests beside it
+```
 
-- **Display Font**: Playfair Display (serif) - Headings
-- **Body Font**: DM Sans (sans-serif) - Body text
+Nothing under `data/` is fetched — the clinic's details, services, dentists,
+testimonials and questions are typed content, imported directly. The rule
+that keeps this manageable is that a fact is written once: the phone number,
+the address and the opening hours live in `data/clinic.ts` and everything
+else derives from them, including the schema.org markup and the appointment
+slots the booking form offers.
 
-### Components
+## The logic worth knowing about
 
-- **Rounded Cards**: 1.5rem border radius
-- **Buttons**: Multiple variants (primary, secondary, outline, ghost)
-- **Animations**: Fade, slide, scale animations with stagger support
+- **`lib/hours.ts`** reads the published opening hours — which days a row
+  covers, whether it says closed, and the times on a 24-hour clock.
+- **`lib/availability.ts`** turns those hours into appointment slots for a
+  given date. Friday offers none, because the clinic is shut.
+- **`lib/booking.ts`** validates an appointment request, reporting every
+  fault at once rather than one per submission.
+- **`lib/seo.ts`** and **`lib/jsonld.ts`** build the canonical URLs, the
+  sitemap routes and the structured data.
 
-## 🚀 Getting Started
+## Tests
 
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+Vitest, in a node environment, with each suite next to what it covers:
 
-2. **Run development server**:
-   ```bash
-   npm run dev
-   ```
+```bash
+npm run test:run
+```
 
-3. **Build for production**:
-   ```bash
-   npm run build
-   ```
+They cover the logic rather than the markup. Two of them are guards rather
+than unit tests: one checks the sitemap against the route folders that
+actually exist on disk, and one checks the opening-hours markup never names
+a day twice.
 
-4. **Start production server**:
-   ```bash
-   npm start
-   ```
+## Design notes
 
-## 📱 Pages
-
-### Home (`/`)
-- Hero section with CTA
-- Feature cards
-- Services preview
-- Statistics section
-- Testimonials
-- Call-to-action
-
-### Services (`/services`)
-- All dental services with descriptions
-- Pricing information
-- Insurance & payment options
-
-### Doctors (`/doctors`)
-- Team member profiles
-- Education & credentials
-- Awards & recognitions
-
-### Gallery (`/gallery`)
-- Filterable image gallery
-- Lightbox view
-- Categories: Transformations, Clinic, Team
-
-### Contact (`/contact`)
-- Contact information cards
-- Appointment booking form
-- Interactive map
-- Emergency contact info
-
-## 🔧 Customization
-
-### Changing Colors
-Edit the `theme.extend.colors` section in `tailwind.config.js`
-
-### Changing Fonts
-Update the Google Fonts import in `globals.css` and font family in `tailwind.config.js`
-
-### Adding New Pages
-Create a new folder in `src/app/` with a `page.tsx` file
-
-## 📄 License
-
-MIT License - Feel free to use this template for your projects!
+Navy `#0a1f44` through `#1e3a5f` carries the brand, teal `#00a5a8` marks
+anything actionable, and gold `#c9a86c` is used sparingly. Headings are
+Playfair Display, body text DM Sans; both are pulled in from `globals.css`.
+Cards are rounded at `1.5rem` and sections share a single `Section` wrapper
+so vertical rhythm stays consistent.
