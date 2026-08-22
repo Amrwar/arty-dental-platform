@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 
 import Button from '@/components/ui/Button'
@@ -30,10 +31,12 @@ export default function ServicesPreview() {
             className={`overflow-hidden animate-slide-up stagger-${index + 1}`}
           >
             <div className="relative h-48 overflow-hidden">
-              <img
+              <Image
                 src={service.image}
                 alt={service.title}
-                className="w-full h-full object-cover gallery-img"
+                fill
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover gallery-img"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900/60 to-transparent" />
             </div>
