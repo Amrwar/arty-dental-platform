@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Menu, Phone, X } from 'lucide-react'
 
 import Button from '@/components/ui/Button'
@@ -9,10 +10,12 @@ import ClinicMark from '@/components/ui/ClinicMark'
 import { clinic } from '@/data/clinic'
 import { primaryNav } from '@/data/navigation'
 import { formatPhone, telHref } from '@/lib/contact'
+import { isActiveRoute } from '@/lib/links'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,16 +49,28 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-1">
-            {primaryNav.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="relative px-5 py-2 text-navy-700 font-medium transition-colors hover:text-navy-900 group"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-accent-teal transition-all duration-300 group-hover:w-6" />
-              </Link>
-            ))}
+            {primaryNav.map((link) => {
+              const active = isActiveRoute(pathname, link.href)
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`relative px-5 py-2 font-medium transition-colors group ${
+                    active
+                      ? 'text-navy-900'
+                      : 'text-navy-700 hover:text-navy-900'
+                  }`}
+                >
+                  {link.label}
+                  <span
+                    className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-accent-teal transition-all duration-300 ${
+                      active ? 'w-6' : 'w-0 group-hover:w-6'
+                    }`}
+                  />
+                </Link>
+              )
+            })}
           </div>
 
           <div className="hidden lg:flex items-center gap-4">
