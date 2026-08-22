@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
 import FaqSection from '@/components/sections/FaqSection'
 import OpeningHoursCard from '@/components/sections/OpeningHoursCard'
@@ -9,7 +9,7 @@ import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { clinic } from '@/data/clinic'
-import { services } from '@/data/services'
+import { serviceIds, services } from '@/data/services'
 import FieldError from '@/components/ui/FieldError'
 import { emptyBooking, validateBooking, type BookingErrors } from '@/lib/booking'
 import { isSlotOffered, slotLabel, slotsFor } from '@/lib/availability'
@@ -35,6 +35,16 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<BookingErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  // Somebody arriving from a treatment's card has already told us what they
+  // want. Read once on mount rather than through useSearchParams, which
+  // would opt the whole page out of being prerendered.
+  useEffect(() => {
+    const asked = new URLSearchParams(window.location.search).get('service')
+    if (asked && serviceIds().includes(asked)) {
+      setFormData((current) => ({ ...current, service: asked }))
+    }
+  }, [])
 
   const slots = slotsFor(formData.preferredDate)
 
