@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
 import PriceTag from '@/components/ui/PriceTag'
 import SectionHeader from '@/components/ui/SectionHeader'
-import { services } from '@/data/services'
+import { bookingHref, services } from '@/data/services'
 import JsonLd from '@/components/seo/JsonLd'
 import { breadcrumbJsonLd } from '@/lib/jsonld'
 
@@ -102,7 +102,7 @@ export default function ServicesPage() {
                   ))}
                 </div>
 
-                <Button href="/contact">
+                <Button href={bookingHref(service.id)}>
                   Book This Service
                   <ArrowRight className="w-5 h-5" />
                 </Button>
