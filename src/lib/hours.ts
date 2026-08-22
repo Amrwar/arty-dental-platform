@@ -68,3 +68,34 @@ export function overlappingDays(rows: OpeningHours[]): Day[] {
   }
   return WEEK.filter((day) => (counts.get(day) ?? 0) > 1)
 }
+
+/**
+ * A clock time written the way the site writes it — `5 PM`, `9:30 AM` — on
+ * the 24-hour clock, or null if it is not a time at all. Noon and midnight
+ * are the two that catch people out: 12 PM is midday, 12 AM is midnight.
+ */
+export function to24Hour(label: string): string | null {
+  const match = /^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i.exec(label.trim())
+  if (!match) return null
+  const hour = Number(match[1])
+  const minute = match[2] ?? '00'
+  if (hour < 1 || hour > 12 || Number(minute) > 59) return null
+  const pm = match[3].toLowerCase() === 'pm'
+  const onTheDay = hour === 12 ? (pm ? 12 : 0) : pm ? hour + 12 : hour
+  return `${String(onTheDay).padStart(2, '0')}:${minute}`
+}
+
+/**
+ * The times a row opens and closes, or null when it is shut or the hours
+ * are not written as a range.
+ */
+export function timeRange(
+  row: OpeningHours,
+): { opens: string; closes: string } | null {
+  if (isClosed(row)) return null
+  const parts = row.hours.split('-').map((part) => part.trim())
+  if (parts.length !== 2) return null
+  const opens = to24Hour(parts[0])
+  const closes = to24Hour(parts[1])
+  return opens && closes ? { opens, closes } : null
+}
