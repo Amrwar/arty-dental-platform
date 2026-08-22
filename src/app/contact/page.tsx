@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react'
@@ -10,7 +10,8 @@ import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { clinic } from '@/data/clinic'
 import { services } from '@/data/services'
-import { emptyBooking } from '@/lib/booking'
+import FieldError from '@/components/ui/FieldError'
+import { emptyBooking, validateBooking, type BookingErrors } from '@/lib/booking'
 import { formatPhone, mailtoHref, telHref } from '@/lib/contact'
 
 const contactInfo = [
@@ -24,15 +25,22 @@ const contactInfo = [
 
 export default function ContactPage() {
   const [formData, setFormData] = useState(emptyBooking())
+  const [errors, setErrors] = useState<BookingErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    setFormData((current) => ({ ...current, [name]: value }))
+    // Clear the complaint as soon as they start addressing it.
+    setErrors((current) => ({ ...current, [name]: undefined }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const found = validateBooking(formData)
+    setErrors(found)
+    if (Object.keys(found).length > 0) return
     setIsSubmitting(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
     setIsSubmitting(false)
@@ -81,19 +89,22 @@ export default function ContactPage() {
               </Card>
             ) : (
               <Card>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-navy-700 mb-2">Full Name *</label>
                     <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="form-input" placeholder="Nour Adel" />
+                    <FieldError id="name-error" message={errors.name} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-navy-700 mb-2">Email Address *</label>
                       <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="form-input" placeholder="john@example.com" />
+                      <FieldError id="email-error" message={errors.email} />
                     </div>
                     <div>
                       <label htmlFor="phone" className="block text-sm font-medium text-navy-700 mb-2">Phone Number *</label>
                       <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required className="form-input" placeholder="+20 100 000 0000" />
+                      <FieldError id="phone-error" message={errors.phone} />
                     </div>
                   </div>
                   <div>
@@ -106,11 +117,13 @@ export default function ContactPage() {
                         </option>
                       ))}
                     </select>
+                    <FieldError id="service-error" message={errors.service} />
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="preferredDate" className="block text-sm font-medium text-navy-700 mb-2">Preferred Date</label>
                       <input type="date" id="preferredDate" name="preferredDate" value={formData.preferredDate} onChange={handleChange} className="form-input" />
+                      <FieldError id="preferredDate-error" message={errors.preferredDate} />
                     </div>
                     <div>
                       <label htmlFor="preferredTime" className="block text-sm font-medium text-navy-700 mb-2">Preferred Time</label>
@@ -122,11 +135,13 @@ export default function ContactPage() {
                         <option value="8pm">8:00 PM</option>
                         <option value="9pm">9:00 PM</option>
                       </select>
+                      <FieldError id="preferredTime-error" message={errors.preferredTime} />
                     </div>
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-navy-700 mb-2">Additional Information</label>
                     <textarea id="message" name="message" value={formData.message} onChange={handleChange} rows={4} className="form-input resize-none" placeholder="Tell us about your dental concerns or any special requirements..." />
+                    <FieldError id="message-error" message={errors.message} />
                   </div>
                   <Button type="submit" size="lg" fullWidth disabled={isSubmitting}>
                     {isSubmitting ? (<><span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Submitting...</>) : (<>Request Appointment<Send className="w-5 h-5" /></>)}
