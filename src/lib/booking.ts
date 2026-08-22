@@ -70,7 +70,9 @@ export function validateBooking(request: BookingRequest): BookingErrors {
     errors.phone = 'That phone number is missing some digits.'
   }
 
-  if (request.service.trim().length > 0 && !serviceIds().includes(request.service)) {
+  if (request.service.trim().length === 0) {
+    errors.service = 'Please choose the treatment you need.'
+  } else if (!serviceIds().includes(request.service)) {
     errors.service = 'Please choose one of the treatments listed.'
   }
 

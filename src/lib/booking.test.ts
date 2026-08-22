@@ -34,7 +34,13 @@ describe('emptyBooking', () => {
 
   it('faults every required field at once rather than one at a time', () => {
     const errors = validateBooking(emptyBooking())
-    expect(Object.keys(errors).sort()).toEqual(['email', 'message', 'name', 'phone'])
+    expect(Object.keys(errors).sort()).toEqual([
+      'email',
+      'message',
+      'name',
+      'phone',
+      'service',
+    ])
   })
 })
 
@@ -47,8 +53,8 @@ describe('a complete request', () => {
     expect(isBookable(good)).toBe(true)
   })
 
-  it('is still bookable with no treatment chosen', () => {
-    expect(isBookable(withField('service', ''))).toBe(true)
+  it('is not bookable with no treatment chosen', () => {
+    expect(isBookable(withField('service', ''))).toBe(false)
   })
 })
 
@@ -103,8 +109,14 @@ describe('the phone', () => {
 })
 
 describe('the treatment', () => {
-  it('may be left unchosen', () => {
-    expect(validateBooking(withField('service', '')).service).toBeUndefined()
+  it('has to be chosen', () => {
+    expect(validateBooking(withField('service', '')).service).toBeDefined()
+  })
+
+  it('says something different about a missing one and a wrong one', () => {
+    expect(validateBooking(withField('service', '')).service).not.toBe(
+      validateBooking(withField('service', 'astrology')).service,
+    )
   })
 
   it('has to be one the clinic offers', () => {
