@@ -5,6 +5,12 @@ import Section from '@/components/ui/Section'
 import SectionHeader from '@/components/ui/SectionHeader'
 import { doctors, founder as founderDoctor } from '@/data/doctors'
 
+export const metadata = {
+  title: 'Our Dentists',
+  description:
+    'Meet the specialists behind the clinic, their qualifications and the areas of dentistry each of them practises.',
+}
+
 
 
 const values = [
