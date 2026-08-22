@@ -12,7 +12,7 @@ import { stats } from '@/data/testimonials'
 import { listSentence } from '@/lib/text'
 
 export const metadata = {
-  title: `About | ${clinic.name}`,
+  title: 'About',
   description: clinic.tagline,
 }
 

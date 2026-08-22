@@ -4,7 +4,7 @@ import { clinic } from '@/data/clinic'
 import { formatPhone, telHref } from '@/lib/contact'
 
 export const metadata = {
-  title: `Terms of Service | ${clinic.name}`,
+  title: 'Terms of Service',
   description: `The terms on which ${clinic.name} books and provides treatment.`,
 }
 

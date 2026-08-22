@@ -4,7 +4,7 @@ import { clinic } from '@/data/clinic'
 import { mailtoHref } from '@/lib/contact'
 
 export const metadata = {
-  title: `Privacy Policy | ${clinic.name}`,
+  title: 'Privacy Policy',
   description: `How ${clinic.name} handles the information you share with us.`,
 }
 
