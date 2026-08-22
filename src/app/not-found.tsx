@@ -5,7 +5,7 @@ import { primaryNav } from '@/data/navigation'
 import { formatPhone, telHref } from '@/lib/contact'
 
 export const metadata = {
-  title: `Page not found | ${clinic.name}`,
+  title: 'Page not found',
 }
 
 export default function NotFound() {
